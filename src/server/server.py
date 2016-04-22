@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from socketserver import TCPServer, ThreadingMixIn, BaseRequestHandler
+from game_engine import TicTacToe
 
 #
 #   Handler class
@@ -23,11 +24,11 @@ class ClientHandler(BaseRequestHandler):
         return ''.join(buff)
 
     #
-    def send_data(self, data=""):
+    def send_data(self, data="", encode="utf-8"):
         total_sent = 0
 
         while total_sent < len(data):
-            s = self.request.send(data[total_sent:].encode())
+            s = self.request.send(data[total_sent:].encode(encode))
             if s == 0:
                 raise RuntimeError("Connection lost")
             total_sent += s
@@ -37,16 +38,13 @@ class ClientHandler(BaseRequestHandler):
 
     #
     def handle(self):
-        stop = False
-        # g = Game(self)
+        game = TicTacToe()
 
-        # g.run()
-        while not stop:
-            data = self.recv_data()
-            stop = True
+        game.init(self)
 
-        # g.destroy()
-        print("%s" % (data))
+        #TicTacToe.run(self)
+
+        #TicTacToe.destroy(self)
 
 
 #
