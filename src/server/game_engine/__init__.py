@@ -1,1 +1,1 @@
-from .tictactoe import *
+from .TicTacToe import *

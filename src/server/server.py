@@ -38,13 +38,13 @@ class ClientHandler(BaseRequestHandler):
 
     #
     def handle(self):
-        game = TicTacToe()
+        game = TicTacToe(self)
 
-        game.init(self)
+        game.init()
 
-        #TicTacToe.run(self)
+        game.run()
 
-        #TicTacToe.destroy(self)
+        game.destroy()
 
 
 #
