@@ -21,11 +21,11 @@ class Client(object):
         self.c.close()
 
     #
-    def send_data(self, data=""):
+    def send_data(self, data="", encode="utf-8"):
         total_sent = 0
 
         while total_sent < len(data):
-            s = self.c.send(data[total_sent:].encode())
+            s = self.c.send(data[total_sent:].encode(encode))
             if s == 0:
                 raise RuntimeError("Connection lost")
             total_sent += s
@@ -38,9 +38,9 @@ class Client(object):
         buff = []
         data = ""
 
-        while data is not None:
+        while not data:
             data = self.c.recv(size)
-            if data is not None:
+            if data:
                 buff.append(data.decode(decode))
 
         return ''.join(buff)
@@ -58,14 +58,14 @@ class Client(object):
 
 def main():
     c = Client()
-    stop = False
-    c.connect()
 
-    while stop is False:
-        c.send_data(str(input()))
-        stop = True
-
-    c.disconnect()
+    try:
+        c.connect()
+        print("%s" % (c.recv_data()))
+        c.disconnect()
+    except KeyboardInterrupt:
+        c.disconnect()
+        exit(0)
 
 if __name__ == '__main__':
     main()
