@@ -56,9 +56,9 @@ class PygletLib:
                 del self.content[key]
 
     # Set sprite dimension
-    def setSpriteDimension(self, sprite, width, height):
-        sprite['options']['width'] = width
-        sprite['options']['height'] = height
+    def setSpriteDimension(self, name, width, height):
+        self.assets[name].width = width
+        self.assets[name].height = height
 
     # Add content
     def addContent(self, id, type, options):
@@ -90,8 +90,6 @@ class PygletLib:
 
     # Draw sprite
     def drawSprite(self, name, opts):
-        self.assets[name].width = opts['width']
-        self.assets[name].height = opts['height']
         self.assets[name].blit(opts['x'], opts['y'])
 
     # Draw input box

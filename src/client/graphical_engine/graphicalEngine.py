@@ -15,6 +15,10 @@ class GraphicalEngine:
     def addContent(self, id, type, options):
         self.library.addContent(id, type, options)
 
+    # Set sprite dimension by name
+    def setSpriteDimension(self, name, width, height):
+        self.library.setSpriteDimension(name, width, height)
+
     # Add resource path
     def addResourcePath(self, path):
         self.library.addResourcePath(path)
