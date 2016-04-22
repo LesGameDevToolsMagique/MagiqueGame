@@ -1,2 +1,2 @@
-from .tictactoe import *
 from .expressions import *
+from .TicTacToe import *
