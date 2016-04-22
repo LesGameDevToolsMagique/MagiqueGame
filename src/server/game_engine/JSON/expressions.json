@@ -1,0 +1,7 @@
+{"expressions":
+[
+    {"key": "3 _ 3 = 6",     "answer": "+"},
+    {"key": "C:_",           "answer": "/"},
+    {"key": "123 _ 123 = 0", "answer": "-"}, 
+    {"key": "1 _ 1 = 1",     "answer": "*"}
+]}
