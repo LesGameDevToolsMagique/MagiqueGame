@@ -17,15 +17,15 @@ class GraphicalEngine:
 
     # Add resource path
     def addResourcePath(self, path):
-        self.library.resources.addResourcePath(path)
+        self.library.addResourcePath(path)
 
     # Load all the resource path
     def loadResourcePath(self):
-        self.library.resources.loadResourcePath()
+        self.library.loadResourcePath()
 
     # Add image in resources
     def addImage(self, name, path):
-        self.library.resources.addImage(name, path)
+        self.library.addImage(name, path)
 
     # Draw from library
     def draw(self):

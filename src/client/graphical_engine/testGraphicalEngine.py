@@ -34,6 +34,6 @@ for index, case in enumerate(game_map):
             "y": int(math.floor(index / width))
             }
         wall_id = 'wall:x:' + str(opts['x']) + ':y:' + str(opts['y'])
-        game_engine.graphicalEngine.library.addContent(wall_id, 'sprite', opts)
+        game_engine.graphicalEngine.addContent(wall_id, 'sprite', opts)
 
 game_engine.graphicalEngine.library.run()

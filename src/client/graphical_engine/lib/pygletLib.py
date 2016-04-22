@@ -1,11 +1,15 @@
 import pyglet
-from pygletResources import PygletResources
 
 class PygletLib:
 
     def __init__(self):
+
+        # Game content
         self.content = {}
-        self.resources = PygletResources()
+
+        # Grphical ressource management
+        self.assets = {}
+        self.resourcePath = []
 
     # Open a window
     def initWindow(self, width, height):
@@ -59,6 +63,19 @@ class PygletLib:
         content = { 'type': type, 'opts': options }
         self.content[id] = content
 
+    # Add resources path
+    def addResourcePath(self, path):
+        self.resourcePath.append(path)
+
+    # Load all resource path contain in resourcePath array
+    def loadResourcePath(self):
+        pyglet.resource.path = self.resourcePath
+        pyglet.resource.reindex()
+
+    # Add image
+    def addImage(self, name, path):
+        self.assets[name] = pyglet.resource.image(path)
+
     # Add a text to containers
     def addText(self, id, type, text, options):
         document = { 'type': type, 'text': text, 'opts': options }
@@ -73,8 +90,9 @@ class PygletLib:
     def drawSprite(self, name, opts):
         width = self.window.width // opts['width']
         height = self.window.height // opts['height']
-        self.resources.setImageDimension(self.resources.assets[name], width, height)
-        self.resources.assets[name].blit(opts['x'] * width, opts['y'] * height)
+        self.assets[name].width = width
+        self.assets[name].height = height
+        self.assets[name].blit(opts['x'] * width, opts['y'] * height)
 
     # Draw input box
     def drawInputBox(self, text, opts):
