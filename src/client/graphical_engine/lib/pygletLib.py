@@ -7,13 +7,15 @@ class PygletLib:
         # Game content
         self.content = {}
 
-        # Grphical ressource management
+        # Graphical ressource management
         self.assets = {}
         self.resourcePath = []
 
     # Open a window
     def initWindow(self, width, height):
         self.window = pyglet.window.Window(width, height)
+        self.ratioWidth = self.window.width // width
+        self.ratioHeight = self.window.height // height
 
     # Draw content
     def draw(self):
@@ -88,11 +90,9 @@ class PygletLib:
 
     # Draw sprite
     def drawSprite(self, name, opts):
-        width = self.window.width // opts['width']
-        height = self.window.height // opts['height']
-        self.assets[name].width = width
-        self.assets[name].height = height
-        self.assets[name].blit(opts['x'] * width, opts['y'] * height)
+        self.assets[name].width = opts['width']
+        self.assets[name].height = opts['height']
+        self.assets[name].blit(opts['x'], opts['y'])
 
     # Draw input box
     def drawInputBox(self, text, opts):

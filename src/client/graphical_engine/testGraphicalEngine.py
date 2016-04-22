@@ -19,19 +19,21 @@ game_engine.graphicalEngine.initWindow(500, 500)
 data = game_engine.readJsonFile('testMap.json')
 
 # Get map
-width = data['width']
-height = data['height']
+width = 500 // data['width']
+height = 500 // data['height']
 game_map = data['map']
 
 for index, case in enumerate(game_map):
     if case == 1:
-        print 'x: ' + str(index % width) + ' y: ' + str(int(math.floor(index / width)))
+        x = ((index % data['width']) * width)
+        y = ((int(math.floor(index // data['width']))) * height)
+        print 'x: ' + str(x) + ' y: ' + str(y)
         opts = {
             "name": "wall",
             "width": width,
             "height": height,
-            "x": index % width,
-            "y": int(math.floor(index / width))
+            "x": x,
+            "y": y
             }
         wall_id = 'wall:x:' + str(opts['x']) + ':y:' + str(opts['y'])
         game_engine.graphicalEngine.addContent(wall_id, 'sprite', opts)
