@@ -150,8 +150,8 @@ class PygletLib:
                     "x": ((index % width) * optsWidth),
                     "y": ((int(math.floor(index // height))) * optsHeight)
                 }
-                print(opts)
                 optsId = "%s:x:%s:y:%s" % (opts['name'], opts['x'], opts['y'])
+                print("add content %s" % (optsId))
                 self.setSpriteDimension(opts['name'], optsWidth, optsHeight)
                 self.addContent(optsId, 'sprite', opts)
 
@@ -178,7 +178,7 @@ class PygletLib:
             if pyglet.window.mouse.LEFT:
                 posX = math.floor((x * self.mapWidth) // self.window.width)
                 posY = math.floor((y * self.mapHeight) // self.window.height)
-                toSend = "{ \"x\": %d, \"y\": %d }" % (posX, posY)
+                toSend = "left click { \"x\": %d, \"y\": %d }" % (posX, posY)
                 print(toSend)
                 client.send_data(toSend)
                 pass

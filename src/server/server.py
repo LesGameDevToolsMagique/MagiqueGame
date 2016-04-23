@@ -15,7 +15,6 @@ class ClientHandler(BaseRequestHandler):
     def recv_data(self, decode="utf-8"):
         import struct
         size_buff = self.request.recv(4)
-        print("Size buf: %s" % (size_buff))
         size, = struct.unpack('!I', size_buff)
 
         return self.request.recv(size).decode(decode)
