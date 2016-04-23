@@ -269,10 +269,20 @@ class TicTacToe(object):
 
     #
     def player_turn(self, play):
-        case = 0
+        case = -1
 
-        # TODO
-        #   transform into map case
+        # transform event into a map case
+        play = self.s.recv_data()
+
+        if 'x' in play and 'y' in play:
+            if (play['x'] >= 0 and play['x'] <= 2) and (play['y'] >= 0 and play['y'] <= 2):
+                case = play['x'] + (play['y'] * 3)
+            else:
+                self.s.send_data('{"error": "Bad position"}')
+                self.player_turn()
+        else:
+            self.s.send_data('{"error": "No required data x and y"}')
+            self.player_turn()
 
         # check if case is free
         #   if free accept and send the new map to client
@@ -282,3 +292,4 @@ class TicTacToe(object):
             self.s.send_data(self.json_map())
         else:
             self.s.send_data('{"error": "Can\'t play on this case"}')
+            self.player_turn()
