@@ -13,28 +13,17 @@ class ClientHandler(BaseRequestHandler):
 
     #
     def recv_data(self, size=1024, decode="utf-8"):
-        buff = []
-        data = ""
+        import struct
+        size_buff = self.request.recv(4)
+        size, = struct.unpack('!I', size_buff)
 
-        while not data:
-            data = self.request.recv(size)
-            if data:
-                buff.append(data.decode(decode))
-
-        return ''.join(buff)
+        return self.request.recv(size).decode(decode)
 
     #
     def send_data(self, data="", encode="utf-8"):
-        total_sent = 0
-
-        while total_sent < len(data):
-            s = self.request.send(data[total_sent:].encode(encode))
-            if s == 0:
-                raise RuntimeError("Connection lost")
-            total_sent += s
-
-        if total_sent > 0:
-            self.send_data()
+        import struct
+        self.request.send(struct.pack('!I', len(data)))
+        self.request.send(data.encode(encode))
 
     #
     def handle(self):
@@ -42,9 +31,9 @@ class ClientHandler(BaseRequestHandler):
 
         game.init()
 
-        game.run()
+        #game.run()
 
-        game.destroy()
+        #game.destroy()
 
 
 #

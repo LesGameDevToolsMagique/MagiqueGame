@@ -10,40 +10,29 @@ class Client(object):
 
     def __init__(self):
         from socket import socket
-        self.c = socket()
+        self.s = socket()
 
     #
     def connect(self, host="127.0.0.1", port=12321):
-        self.c.connect((host, port))
+        self.s.connect((host, port))
 
     #
     def disconnect(self):
-        self.c.close()
+        self.s.close()
 
     #
     def send_data(self, data="", encode="utf-8"):
-        total_sent = 0
-
-        while total_sent < len(data):
-            s = self.c.send(data[total_sent:].encode(encode))
-            if s == 0:
-                raise RuntimeError("Connection lost")
-            total_sent += s
-
-        if total_sent > 0:
-            self.send_data()
+        import struct
+        self.s.send(struct.pack('!I', len(data)))
+        send.s.send(data).encode(encode)
 
     #
-    def recv_data(self, size=1024, decode="utf-8"):
-        buff = []
-        data = ""
+    def recv_data(self, decode="utf-8"):
+        import struct
+        size_buff = self.s.recv(4)
+        size, = struct.unpack('!I', size_buff)
 
-        while not data:
-            data = self.c.recv(size)
-            if data:
-                buff.append(data.decode(decode))
-
-        return ''.join(buff)
+        return self.s.recv(size).decode(decode)
 
 
 
@@ -61,6 +50,7 @@ def main():
 
     try:
         c.connect()
+        print("%s" % (c.recv_data()))
         print("%s" % (c.recv_data()))
         c.disconnect()
     except KeyboardInterrupt:
