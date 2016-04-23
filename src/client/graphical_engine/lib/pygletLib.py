@@ -121,4 +121,13 @@ class PygletLib:
 
             self.draw()
 
+        @self.window.event
+        def on_mouse_press(x, y, button, modifiers):
+            if pyglet.window.mouse.LEFT:
+                print 'Left mouse at x: ' + str(x) + ' y: ' + str(y)
+                pass
+            elif pyglet.window.mouse.RIGHT:
+                print 'Right mouse at x: ' + str(x) + ' y: ' + str(y)
+                pass
+
         pyglet.app.run()
