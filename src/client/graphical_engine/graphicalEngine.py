@@ -13,7 +13,7 @@ class GraphicalEngine:
 
     # Add contents
     def addContents(self, width, height, contents):
-        self.library.addContents(self, width, height, contents)
+        self.library.addContents(width, height, contents)
 
     # Add content, or object in game
     def addContent(self, id, type, options):
