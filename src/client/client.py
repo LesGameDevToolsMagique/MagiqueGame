@@ -55,7 +55,6 @@ def initResources(graphicalEngine):
     graphicalEngine.addImage('wall', 'wall.png')
     graphicalEngine.addImage('X', 'x-300px.png')
     graphicalEngine.addImage('O', 'o-300px.png')
-    print(graphicalEngine.library.assets)
 
 # Add content to graphicalEngine
 # def addContents(graphicalEngine, width, height, contents):
@@ -99,10 +98,6 @@ def game(c, graphicalEngine):
             window = graphicalEngine.getWindow()
             initGame = False
         else:
-            if running == False:
-                graphicalEngine.runOnline(c)
-                running = True
-
             dataFromServer = c.recv_data()
             dataFromServer = dataFromServer.replace("'", "\"")
             print("Not init %s" % (dataFromServer))
@@ -112,6 +107,10 @@ def game(c, graphicalEngine):
                 graphicalEngine.addContents(graphicalEngine.getMapWidth(), graphicalEngine.getMapHeight(), contents['map'])
                 graphicalEngine.getWindow().clear()
                 graphicalEngine.draw()
+
+            if running == False:
+                graphicalEngine.runOnline(c)
+                running = True
 
     # start(graphicalEngine)
 
