@@ -111,7 +111,7 @@ class TicTacToe(object):
     #
     def ia_first_play(self):
         if (self.get_rand(50) % 3) == 0:
-            self.game_map[5] = self.ia_form
+            self.game_map[4] = self.ia_form
             self.cm.send_data(self.json_map())
 
     #
