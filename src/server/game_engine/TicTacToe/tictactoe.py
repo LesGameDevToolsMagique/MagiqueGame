@@ -46,7 +46,7 @@ class TicTacToe(object):
         self.ia_first_play()
 
         while True:
-            self.player_turn(self.s.recv_data())
+            self.player_turn()
 
             if self.check_form(self.player_form, '') is True:
                 self.s.send_data('{"message": "You win"}')
@@ -74,19 +74,6 @@ class TicTacToe(object):
 
     #
     def json_map(self):
-        # return str({
-        #     "map": {
-        #         "1": self.game_map[0],
-        #         "2": self.game_map[1],
-        #         "3": self.game_map[2],
-        #         "4": self.game_map[3],
-        #         "5": self.game_map[4],
-        #         "6": self.game_map[5],
-        #         "7": self.game_map[6],
-        #         "8": self.game_map[7],
-        #         "9": self.game_map[8],
-        #     }
-        # })
         return str({
             "map": self.game_map
         })
@@ -268,7 +255,7 @@ class TicTacToe(object):
     #
 
     #
-    def player_turn(self, play):
+    def player_turn(self):
         case = -1
 
         # transform event into a map case
