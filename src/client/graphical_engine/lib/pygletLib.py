@@ -17,9 +17,17 @@ class PygletLib:
         self.ratioWidth = self.window.width // width
         self.ratioHeight = self.window.height // height
 
+    # Get window width
+    def getWindowWidth(self):
+        return self.window.width
+
+    # Get window height
+    def getWindowHeight(self):
+        return self.window.height
+
     # Draw content
     def draw(self):
-        for key, value in self.content.iteritems():
+        for key, value in self.content.items():
 
             # Center horizontally and vertically
             if 'center' in value['opts'] and value['opts']['center']:
@@ -124,10 +132,10 @@ class PygletLib:
         @self.window.event
         def on_mouse_press(x, y, button, modifiers):
             if pyglet.window.mouse.LEFT:
-                print 'Left mouse at x: ' + str(x) + ' y: ' + str(y)
+                print("Left mouse at x: %d y: %d" % (x, y))
                 pass
             elif pyglet.window.mouse.RIGHT:
-                print 'Right mouse at x: ' + str(x) + ' y: ' + str(y)
+                print("Right mouse at x: %d y: %d" % (x, y))
                 pass
 
         pyglet.app.run()

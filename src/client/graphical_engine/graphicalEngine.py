@@ -31,6 +31,14 @@ class GraphicalEngine:
     def addImage(self, name, path):
         self.library.addImage(name, path)
 
+    # Get window width
+    def getWindowWidth(self):
+        return self.library.getWindowWidth()
+
+    # Get window height
+    def getWindowHeight(self):
+        return self.library.getWindowHeight()
+
     # Draw from library
     def draw(self):
         self.library.draw()

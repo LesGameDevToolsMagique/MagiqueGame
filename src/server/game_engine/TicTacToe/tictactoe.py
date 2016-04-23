@@ -2,6 +2,8 @@
 #   TicTacToe class
 #
 
+from time import sleep
+
 class TicTacToe(object):
     """
     """
@@ -30,8 +32,9 @@ class TicTacToe(object):
         #
 
         # send player form
-        self.cm.send_data('{"form": %s}' % (self.player_form))
+        self.cm.send_data('{"form": "%s", "map-width": 3, "map-height": 3}' % (self.player_form))
 
+        sleep(1)
         # send map
         self.cm.send_data(self.json_map())
 
