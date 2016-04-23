@@ -1,4 +1,6 @@
 import pyglet
+import json
+import math
 
 class PygletLib:
 
@@ -49,6 +51,7 @@ class PygletLib:
 
             # Add sprite
             if value['type'] == 'sprite':
+                print("SPRITE")
                 self.drawSprite(value['opts']['name'], value['opts'])
 
     # Update content
@@ -67,6 +70,17 @@ class PygletLib:
     def setSpriteDimension(self, name, width, height):
         self.assets[name].width = width
         self.assets[name].height = height
+
+    # Set map dimension
+    def setMapSize(self, width, height):
+        self.mapWidth = width
+        self.mapHeight = height
+
+    def getMapWidth(self):
+        return self.mapWidth
+
+    def getMapHeight(self):
+        return self.mapHeight
 
     # Add content
     def addContent(self, id, type, options):
@@ -98,6 +112,7 @@ class PygletLib:
 
     # Draw sprite
     def drawSprite(self, name, opts):
+        print("NAME %s, OPTIONS %s" % (name, opts))
         self.assets[name].blit(opts['x'], opts['y'])
 
     # Draw input box
@@ -117,6 +132,69 @@ class PygletLib:
                                       upRight[0], upRight[1],
                                       downRight[0], downRight[1],
                                       downLeft[0], downLeft[1])))
+
+    # Add content to graphicalEngine ( Like a private method )
+    def addContents(self, width, height, contents):
+        for index, case in enumerate(contents):
+
+            print("index: %d and case: %s" % (index, case))
+            optsWidth = self.window.width // width
+            optsHeight = self.window.height // height
+
+            if case:
+                # print("case is not empty => %s" % (case))
+                opts = {
+                    "name": case,
+                    "width": optsWidth,
+                    "height": optsHeight,
+                    "x": ((index % width) * optsWidth),
+                    "y": ((int(math.floor(index // height))) * optsHeight)
+                }
+                print(opts)
+                optsId = "%s:x:%s:y:%s" % (opts['name'], opts['x'], opts['y'])
+                self.setSpriteDimension(opts['name'], optsWidth, optsHeight)
+                self.addContent(optsId, 'sprite', opts)
+
+    # Run pyglet online app
+    def runOnline(self, client):
+
+        @self.window.event
+        def on_draw():
+            self.window.clear()
+
+            dataFromServer = client.recv_data()
+            dataFromServer = dataFromServer.replace("'", "\"")
+            print("Not init %s" % (dataFromServer))
+            contents = json.loads(dataFromServer)
+
+            if 'map' in contents:
+                self.addContents(self.mapWidth, self.mapHeight, contents['map'])
+
+            self.draw()
+
+
+        @self.window.event
+        def on_mouse_press(x, y, button, modifiers):
+            if pyglet.window.mouse.LEFT:
+                posX = math.floor((x * self.mapWidth) // self.window.width)
+                posY = math.floor((y * self.mapHeight) // self.window.height)
+                toSend = "{ \"x\": %d, \"y\": %d }" % (posX, posY)
+                print(toSend)
+                client.send_data(toSend)
+                pass
+            elif pyglet.window.mouse.RIGHT:
+                posX = math.floor((x * self.mapWidth) // self.window.width)
+                posY = math.floor((y * self.mapHeight) // self.window.height)
+                client.send_data("{ \"x\": %d, \"y\": %d }" % (posX, posY))
+                pass
+
+        @self.window.event
+        def on_key_press(symbol, modifiers):
+            if (symbol == pyglet.window.key.ESCAPE):
+                self.close()
+                exit(0)
+
+        pyglet.app.run()
 
     # Run pyglet app
     def run(self):
@@ -139,3 +217,7 @@ class PygletLib:
                 pass
 
         pyglet.app.run()
+
+    # Close pyglet app
+    def close(self):
+        pyglet.app.exit()

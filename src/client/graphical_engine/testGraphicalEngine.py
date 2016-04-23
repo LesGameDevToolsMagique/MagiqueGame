@@ -39,4 +39,4 @@ for index, case in enumerate(game_map):
         game_engine.graphicalEngine.setSpriteDimension(opts['name'], opts['width'], opts['height'])
         game_engine.graphicalEngine.addContent(wall_id, 'sprite', opts)
 
-game_engine.graphicalEngine.library.run()
+# game_engine.graphicalEngine.library.run()

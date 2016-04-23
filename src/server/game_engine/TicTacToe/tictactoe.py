@@ -13,8 +13,8 @@ class TicTacToe(object):
     ia_form = ''
 
     #
-    def __init__(self, cm):
-        self.cm = cm
+    def __init__(self, socket):
+        self.s = socket
         for i in range(0, 9):
             self.game_map.append("")
 
@@ -32,11 +32,10 @@ class TicTacToe(object):
         #
 
         # send player form
-        self.cm.send_data('{"form": "%s", "map-width": 3, "map-height": 3}' % (self.player_form))
+        self.s.send_data('{"form": "%s", "map-width": 3, "map-height": 3}' % (self.player_form))
 
-        sleep(1)
         # send map
-        self.cm.send_data(self.json_map())
+        self.s.send_data('%s' % (self.json_map()))
 
 
 
@@ -47,16 +46,16 @@ class TicTacToe(object):
         self.ia_first_play()
 
         while True:
-            self.player_turn(self.cm.recv_data())
+            self.player_turn(self.s.recv_data())
 
             if self.check_form(self.player_form, '') is True:
-                self.cm.send_data('{"message": "You win"}')
+                self.s.send_data('{"message": "You win"}')
                 break
 
             self.ia_turn()
 
             if self.check_form(self.ia_form, '') is True:
-                self.cm.send_data('{"message": "You loose"}')
+                self.s.send_data('{"message": "You loose"}')
                 break
 
     #
@@ -66,7 +65,7 @@ class TicTacToe(object):
         #
 
         # send end message
-        self.cm.send_data('{"message": "Thank you for playing, byebye"}')
+        self.s.send_data('{"message": "Thank you for playing, byebye"}')
         pass
 
     #
@@ -75,19 +74,23 @@ class TicTacToe(object):
 
     #
     def json_map(self):
+        # return str({
+        #     "map": {
+        #         "1": self.game_map[0],
+        #         "2": self.game_map[1],
+        #         "3": self.game_map[2],
+        #         "4": self.game_map[3],
+        #         "5": self.game_map[4],
+        #         "6": self.game_map[5],
+        #         "7": self.game_map[6],
+        #         "8": self.game_map[7],
+        #         "9": self.game_map[8],
+        #     }
+        # })
         return str({
-            "map": {
-                1: self.game_map[0],
-                2: self.game_map[1],
-                3: self.game_map[2],
-                4: self.game_map[3],
-                5: self.game_map[4],
-                6: self.game_map[5],
-                7: self.game_map[6],
-                8: self.game_map[7],
-                9: self.game_map[8],
-            }
+            "map": self.game_map
         })
+
 
     #
     #   Random
@@ -114,8 +117,8 @@ class TicTacToe(object):
     #
     def ia_first_play(self):
         if (self.get_rand(50) % 3) == 0:
-            self.game_map[5] = self.ia_form
-            self.cm.send_data(self.json_map())
+            self.game_map[4] = self.ia_form
+            self.s.send_data(self.json_map())
 
     #
     def check_form(self, check_form, form, play=False):
@@ -257,7 +260,7 @@ class TicTacToe(object):
             self.ia_random_play()
 
         # send map after ia turn
-        self.cm.send_data(self.json_map())
+        self.s.send_data(self.json_map())
 
 
     #
@@ -276,6 +279,6 @@ class TicTacToe(object):
         #   else send error to client
         if self.game_map[case] == '':
             self.game_map[case] = self.player_form
-            self.cm.send_data(self.json_map())
+            self.s.send_data(self.json_map())
         else:
-            self.cm.send_data('{"error": "Can\'t play on this case"}')
+            self.s.send_data('{"error": "Can\'t play on this case"}')

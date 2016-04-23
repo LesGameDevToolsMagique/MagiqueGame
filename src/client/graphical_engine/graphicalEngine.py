@@ -11,6 +11,10 @@ class GraphicalEngine:
     def initWindow(self, width, height):
         self.library.initWindow(width, height)
 
+    # Add contents
+    def addContents(self, width, height, contents):
+        self.library.addContents(self, width, height, contents)
+
     # Add content, or object in game
     def addContent(self, id, type, options):
         self.library.addContent(id, type, options)
@@ -18,6 +22,16 @@ class GraphicalEngine:
     # Set sprite dimension by name
     def setSpriteDimension(self, name, width, height):
         self.library.setSpriteDimension(name, width, height)
+
+    # Set map dimension
+    def setMapSize(self, width, height):
+        self.library.setMapSize(width, height)
+
+    def getMapWidth(self):
+        return self.library.getMapWidth()
+
+    def getMapHeight(self):
+        return self.library.getMapHeight()
 
     # Add resource path
     def addResourcePath(self, path):
@@ -39,9 +53,17 @@ class GraphicalEngine:
     def getWindowHeight(self):
         return self.library.getWindowHeight()
 
+    # Get window
+    def getWindow(self):
+        return self.library.window
+
     # Draw from library
     def draw(self):
         self.library.draw()
+
+    # Def runOnline
+    def runOnline(self, client):
+        self.library.runOnline(client)
 
     # Run the library
     def run(self):
