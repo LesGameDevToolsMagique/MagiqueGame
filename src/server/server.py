@@ -12,7 +12,7 @@ class ClientHandler(BaseRequestHandler):
     """
 
     #
-    def recv_data(self, size=1024, decode="utf-8"):
+    def recv_data(self, decode="utf-8"):
         import struct
         size_buff = self.request.recv(4)
         size, = struct.unpack('!I', size_buff)
