@@ -66,7 +66,8 @@ class TicTacToe(object):
 
         # send end message
         self.s.send_data('{"message": "Thank you for playing, byebye"}')
-        pass
+        self.map = []
+
 
     #
     #
@@ -105,121 +106,84 @@ class TicTacToe(object):
     def ia_first_play(self):
         if (self.get_rand(50) % 3) == 0:
             self.game_map[4] = self.ia_form
-            self.s.send_data(self.json_map())
+        self.s.send_data(self.json_map())
+
+    #
+    def play_or_check(self, case, play, check_form, form):
+        if play is True and self.game_map[case] == '':
+            self.game_map[case] = form
+        elif play is False and self.game_map[case] != check_form:
+            return False
+        return True
 
     #
     def check_form(self, check_form, form, play=False):
         # check lines
         # column 1
         if self.game_map[1] == check_form and self.game_map[2] == check_form:
-            if play is True:
-                self.game_map[0] = form
-            return True
+            return self.play_or_check(0, play, check_form, form)
         elif self.game_map[4] == check_form and self.game_map[5] == check_form:
-            if play is True:
-                self.game_map[3] = form
-            return True
+            return self.play_or_check(3, play, check_form, form)
         elif self.game_map[7] == check_form and self.game_map[8] == check_form:
-            if play is True:
-                self.game_map[6] = form
-            return True
+            return self.play_or_check(6, play, check_form, form)
 
         # column 2
         if self.game_map[0] == check_form and self.game_map[2] == check_form:
-            if play is True:
-                self.game_map[1] = form
-            return True
+            return self.play_or_check(1, play, check_form, form)
         elif self.game_map[3] == check_form and self.game_map[5] == check_form:
-            if play is True:
-                self.game_map[4] = form
-            return True
+            return self.play_or_check(4, play, check_form, form)
         elif self.game_map[6] == check_form and self.game_map[8] == check_form:
-            if play is True:
-                self.game_map[7] = form
-            return True
+            return self.play_or_check(7, play, check_form, form)
 
         # column 3
         if self.game_map[0] == check_form and self.game_map[1] == check_form:
-            self.game_map[2] = form
-            return True
+            return self.play_or_check(2, play, check_form, form)
         elif self.game_map[3] == check_form and self.game_map[4] == check_form:
-            self.game_map[5] = form
-            return True
+            return self.play_or_check(5, play, check_form, form)
         elif self.game_map[6] == check_form and self.game_map[7] == check_form:
-            self.game_map[8] = form
-            return True
+            return self.play_or_check(8, play, check_form, form)
 
         # check columns
         # line 1
         if self.game_map[3] == check_form and self.game_map[6] == check_form:
-            if play is True:
-                self.game_map[0] = form
-            return True
+            return self.play_or_check(0, play, check_form, form)
         elif self.game_map[4] == check_form and self.game_map[7] == check_form:
-            if play is True:
-                self.game_map[1] = form
-            return True
+            return self.play_or_check(1, play, check_form, form)
         elif self.game_map[5] == check_form and self.game_map[8] == check_form:
-            if play is True:
-                self.game_map[2] = form
-            return True
+            return self.play_or_check(2, play, check_form, form)
 
         # line 2
         if self.game_map[0] == check_form and self.game_map[3] == check_form:
-            if play is True:
-                self.game_map[6] = form
-            return True
+            return self.play_or_check(6, play, check_form, form)
         elif self.game_map[1] == check_form and self.game_map[4] == check_form:
-            if play is True:
-                self.game_map[7] = form
-            return True
+            return self.play_or_check(7, play, check_form, form)
         elif self.game_map[2] == check_form and self.game_map[5] == check_form:
-            if play is True:
-                self.game_map[8] = form
-            return True
+            return self.play_or_check(8, play, check_form, form)
 
         # line 3
         if self.game_map[0] == check_form and self.game_map[3] == check_form:
-            if play is True:
-                self.game_map[6] = form
-            return True
+            return self.play_or_check(6, play, check_form, form)
         elif self.game_map[1] == check_form and self.game_map[4] == check_form:
-            if play is True:
-                self.game_map[7] = form
-            return True
+            return self.play_or_check(7, play, check_form, form)
         elif self.game_map[2] == check_form and self.game_map[5] == check_form:
-            if play is True:
-                self.game_map[8] = form
-            return True
+            return self.play_or_check(8, play, check_form, form)
 
         # check diagonals
         # diago right
         if self.game_map[0] == check_form and self.game_map[4] == check_form:
-            if play is True:
-                self.game_map[8] = form
-            return True
+            return self.play_or_check(8, play, check_form, form)
         elif self.game_map[0] == check_form and self.game_map[8] == check_form:
-            if play is True:
-                self.game_map[4] = form
-            return True
+            return self.play_or_check(4, play, check_form, form)
         elif self.game_map[8] == check_form and self.game_map[4] == check_form:
-            if play is True:
-                self.game_map[0] = form
-            return True
+            return self.play_or_check(0, play, check_form, form)
 
         # diago left
         if self.game_map[2] == check_form and self.game_map[4] == check_form:
-            if play is True:
-                self.game_map[6] = form
-            return True
+            return self.play_or_check(6, play, check_form, form)
         elif self.game_map[2] == check_form and self.game_map[6] == check_form:
-            if play is True:
-                self.game_map[4] = form
-            return True
+            return self.play_or_check(4, play, check_form, form)
         elif self.game_map[6] == check_form and self.game_map[4] == check_form:
-            if play is True:
-                self.game_map[2] = form
-            return True
+            return self.play_or_check(2, play, check_form, form)
 
         return False
 
@@ -256,14 +220,18 @@ class TicTacToe(object):
 
     #
     def player_turn(self):
+        import json
         case = -1
 
         # transform event into a map case
-        play = self.s.recv_data()
+        play = json.loads(self.s.recv_data())
 
         if 'x' in play and 'y' in play:
-            if (play['x'] >= 0 and play['x'] <= 2) and (play['y'] >= 0 and play['y'] <= 2):
-                case = play['x'] + (play['y'] * 3)
+            x = int(play['x'])
+            y = int(play['y'])
+            print("%d ; %d" % (x , y))
+            if (x >= 0 and x <= 2) and (y >= 0 and y <= 2):
+                case = x + (y * 3)
             else:
                 self.s.send_data('{"error": "Bad position"}')
                 self.player_turn()

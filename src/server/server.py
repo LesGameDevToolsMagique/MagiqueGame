@@ -17,12 +17,17 @@ class ClientHandler(BaseRequestHandler):
         size_buff = self.request.recv(4)
         size, = struct.unpack('!I', size_buff)
 
-        return self.request.recv(size).decode(decode)
+        data = self.request.recv(size).decode(decode)
+
+        print("recv: %s" % (data))
+
+        return data
 
     #
     def send_data(self, data="", encode="utf-8"):
         import struct
         self.request.send(struct.pack('!I', len(data)))
+        print("send: %s" % (data))
         self.request.send(data.encode(encode))
 
     #
