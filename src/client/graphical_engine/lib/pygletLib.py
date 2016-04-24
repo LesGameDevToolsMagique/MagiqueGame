@@ -51,7 +51,7 @@ class PygletLib:
 
             # Add sprite
             if value['type'] == 'sprite':
-                print("SPRITE")
+                #print("SPRITE")
                 self.drawSprite(value['opts']['name'], value['opts'])
 
     # Update content
@@ -112,7 +112,7 @@ class PygletLib:
 
     # Draw sprite
     def drawSprite(self, name, opts):
-        print("NAME %s, OPTIONS %s" % (name, opts))
+        #print("NAME %s, OPTIONS %s" % (name, opts))
         self.assets[name].blit(opts['x'], opts['y'])
 
     # Draw input box
@@ -137,7 +137,7 @@ class PygletLib:
     def addContents(self, width, height, contents):
         for index, case in enumerate(contents):
 
-            print("index: %d and case: %s" % (index, case))
+            #print("index: %d and case: %s" % (index, case))
             optsWidth = self.window.width // width
             optsHeight = self.window.height // height
 
@@ -151,7 +151,7 @@ class PygletLib:
                     "y": ((int(math.floor(index // height))) * optsHeight)
                 }
                 optsId = "%s:x:%s:y:%s" % (opts['name'], opts['x'], opts['y'])
-                print("add content %s" % (optsId))
+                #print("add content %s" % (optsId))
                 self.setSpriteDimension(opts['name'], optsWidth, optsHeight)
                 self.addContent(optsId, 'sprite', opts)
 
@@ -164,7 +164,7 @@ class PygletLib:
 
             dataFromServer = client.recv_data()
             dataFromServer = dataFromServer.replace("'", "\"")
-            print("Not init %s" % (dataFromServer))
+            #print("Not init %s" % (dataFromServer))
             contents = json.loads(dataFromServer)
 
             if 'map' in contents:
@@ -178,15 +178,13 @@ class PygletLib:
             if pyglet.window.mouse.LEFT:
                 posX = math.floor((x * self.mapWidth) // self.window.width)
                 posY = math.floor((y * self.mapHeight) // self.window.height)
-                toSend = "left click { \"x\": %d, \"y\": %d }" % (posX, posY)
+                toSend = "{\"x\": %d, \"y\": %d}" % (posX, posY)
                 print(toSend)
                 client.send_data(toSend)
-                pass
             elif pyglet.window.mouse.RIGHT:
                 posX = math.floor((x * self.mapWidth) // self.window.width)
                 posY = math.floor((y * self.mapHeight) // self.window.height)
-                client.send_data("{ \"x\": %d, \"y\": %d }" % (posX, posY))
-                pass
+                client.send_data("{\"x\": %d, \"y\": %d}" % (posX, posY))
 
         @self.window.event
         def on_key_press(symbol, modifiers):

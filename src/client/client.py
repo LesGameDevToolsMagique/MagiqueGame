@@ -32,7 +32,10 @@ class Client(object):
         size_buff = self.s.recv(4)
         size, = struct.unpack('!I', size_buff)
 
-        return self.s.recv(size).decode(decode)
+        data = self.s.recv(size).decode(decode)
+        print("%s" % (data))
+
+        return data
 
 
 import json
@@ -87,7 +90,7 @@ def game(c, graphicalEngine):
     running = False
 
     while playing:
-        if initGame == True:
+        if initGame is True:
             dataFromServer = c.recv_data()
             dataFromServer = dataFromServer.replace("'", "\"")
             print("Init %s" % (dataFromServer))
@@ -100,17 +103,16 @@ def game(c, graphicalEngine):
         else:
             dataFromServer = c.recv_data()
             dataFromServer = dataFromServer.replace("'", "\"")
-            print("Not init %s" % (dataFromServer))
+            print("Already init %s" % (dataFromServer))
             contents = json.loads(dataFromServer)
 
             if 'map' in contents:
+                print("Get map")
                 graphicalEngine.addContents(graphicalEngine.getMapWidth(), graphicalEngine.getMapHeight(), contents['map'])
                 graphicalEngine.getWindow().clear()
                 graphicalEngine.draw()
 
-            if running == False:
                 graphicalEngine.runOnline(c)
-                running = True
 
     # start(graphicalEngine)
 
