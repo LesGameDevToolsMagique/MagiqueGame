@@ -58,6 +58,13 @@ class TicTacToe(object):
                 self.s.send_data('{"message": "You loose"}')
                 break
 
+            if self.check_map_full() is True:
+                self.s.send_data('{"message": "Draw"}')
+                break
+
+        self.destroy()
+
+
     #
     def destroy(self):
         #
@@ -66,7 +73,7 @@ class TicTacToe(object):
 
         # send end message
         self.s.send_data('{"message": "Thank you for playing, byebye"}')
-        self.map = []
+        self.game_map = []
 
 
     #
@@ -112,9 +119,18 @@ class TicTacToe(object):
     def play_or_check(self, case, play, check_form, form):
         if play is True and self.game_map[case] == '':
             self.game_map[case] = form
-        elif play is False and self.game_map[case] != check_form:
-            return False
-        return True
+            return True
+        return False
+
+    #
+    def check_map_full(self):
+        isFull = True
+
+        for c in self.game_map:
+            if c == '':
+                isFull = False
+
+        return isFull
 
     #
     def check_form(self, check_form, form, play=False):
@@ -153,12 +169,12 @@ class TicTacToe(object):
             return self.play_or_check(2, play, check_form, form)
 
         # line 2
-        if self.game_map[0] == check_form and self.game_map[3] == check_form:
-            return self.play_or_check(6, play, check_form, form)
-        elif self.game_map[1] == check_form and self.game_map[4] == check_form:
-            return self.play_or_check(7, play, check_form, form)
-        elif self.game_map[2] == check_form and self.game_map[5] == check_form:
-            return self.play_or_check(8, play, check_form, form)
+        if self.game_map[0] == check_form and self.game_map[6] == check_form:
+            return self.play_or_check(3, play, check_form, form)
+        elif self.game_map[1] == check_form and self.game_map[7] == check_form:
+            return self.play_or_check(4, play, check_form, form)
+        elif self.game_map[2] == check_form and self.game_map[8] == check_form:
+            return self.play_or_check(5, play, check_form, form)
 
         # line 3
         if self.game_map[0] == check_form and self.game_map[3] == check_form:
@@ -200,15 +216,21 @@ class TicTacToe(object):
     #
     def ia_turn(self):
         # attack
+        print('ia attack')
         play = self.check_form(self.ia_form, self.ia_form, True)
 
         # def
         if play is False:
+            print('ia defense')
             play = self.check_form(self.player_form, self.ia_form, True)
 
         # play a random case
         if play is False:
-            self.ia_random_play()
+            print('ia osef')
+            for i in range(0, len(self.game_map)):
+                if self.game_map[i] == '':
+                    self.game_map[i] = self.ia_form
+                    break
 
         # send map after ia turn
         self.s.send_data(self.json_map())
@@ -246,5 +268,5 @@ class TicTacToe(object):
             self.game_map[case] = self.player_form
             self.s.send_data(self.json_map())
         else:
-            self.s.send_data('{"error": "Can\'t play on this case"}')
+            self.s.send_data('{"error": "Can not play on this case"}')
             self.player_turn()

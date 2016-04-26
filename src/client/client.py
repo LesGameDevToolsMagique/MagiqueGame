@@ -11,32 +11,48 @@ class Client(object):
     def __init__(self):
         from socket import socket
         self.s = socket()
+        self.isRecv = False
+        self.size = -1
 
     #
     def connect(self, host="127.0.0.1", port=12321):
         self.s.connect((host, port))
+        self.s.setblocking(0)
 
     #
     def disconnect(self):
+        self.s.shutdown()
         self.s.close()
 
     #
     def send_data(self, data="", encode="utf-8"):
         import struct
+        print("client send %s" % (data))
         self.s.send(struct.pack('!I', len(data)))
         self.s.send(data.encode(encode))
 
     #
     def recv_data(self, decode="utf-8"):
         import struct
-        size_buff = self.s.recv(4)
-        size, = struct.unpack('!I', size_buff)
-
-        data = self.s.recv(size).decode(decode)
-        print("%s" % (data))
-
-        return data
-
+        from socket import socket
+        from time import sleep
+        print("before client recv")
+        try:
+            if self.isRecv is False:
+                size_buff = self.s.recv(4)
+                self.size, = struct.unpack('!I', size_buff)
+                self.isRecv = True
+                return "{}"
+            else:
+                try:
+                    data = self.s.recv(self.size).decode(decode)
+                    print("after client recv %s size %d" % (data, self.size))
+                    self.isRecv = False
+                    return data
+                except Exception:
+                    return "{}"
+        except Exception:
+            return "{}"
 
 import json
 import math
@@ -92,29 +108,20 @@ def game(c, graphicalEngine):
     while playing:
         if initGame is True:
             dataFromServer = c.recv_data()
-            dataFromServer = dataFromServer.replace("'", "\"")
             print("Init %s" % (dataFromServer))
-            dataFromServer = json.loads(dataFromServer)
-            initGraphicalEngine(graphicalEngine)
-            graphicalEngine.setMapSize(dataFromServer['map-width'], dataFromServer['map-height']);
-            graphicalEngine.initWindow(500, 500)
-            window = graphicalEngine.getWindow()
-            initGame = False
-        else:
-            dataFromServer = c.recv_data()
             dataFromServer = dataFromServer.replace("'", "\"")
-            print("Already init %s" % (dataFromServer))
-            contents = json.loads(dataFromServer)
+            dataFromServer = json.loads(dataFromServer)
+            if 'map-width' in dataFromServer:
+                print("Got info")
+                initGraphicalEngine(graphicalEngine)
+                graphicalEngine.setMapSize(dataFromServer['map-width'], dataFromServer['map-height']);
+                graphicalEngine.initWindow(500, 500)
+                window = graphicalEngine.getWindow()
+                initGame = False
+        else:
+            print("Already init")
 
-            if 'map' in contents:
-                print("Get map")
-                graphicalEngine.addContents(graphicalEngine.getMapWidth(), graphicalEngine.getMapHeight(), contents['map'])
-                graphicalEngine.getWindow().clear()
-                graphicalEngine.draw()
-
-                graphicalEngine.runOnline(c)
-
-    # start(graphicalEngine)
+            graphicalEngine.runOnline(c)
 
 # Start graphical engine
 def start(graphicalEngine):
@@ -131,8 +138,9 @@ def main():
         game(c, graphicalEngine)
 
         c.disconnect()
-    except KeyboardInterrupt:
+    except Exception as e:
         c.disconnect()
+        print("Exception %s" % (e))
         graphicalEngine.close()
         exit(0)
 

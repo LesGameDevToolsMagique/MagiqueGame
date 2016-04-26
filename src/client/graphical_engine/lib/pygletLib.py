@@ -12,6 +12,7 @@ class PygletLib:
         # Graphical ressource management
         self.assets = {}
         self.resourcePath = []
+        self.event_loop = pyglet.app.EventLoop()
 
     # Open a window
     def initWindow(self, width, height):
@@ -53,18 +54,6 @@ class PygletLib:
             if value['type'] == 'sprite':
                 #print("SPRITE")
                 self.drawSprite(value['opts']['name'], value['opts'])
-
-    # Update content
-    def update(self, instructions):
-        for key, value in instructions.iteritems():
-
-            # Add or update content
-            if value['action'] == 'update':
-                self.content[key] = value['content']
-
-            # Delete content
-            if value['action'] == 'delete':
-                del self.content[key]
 
     # Set sprite dimension
     def setSpriteDimension(self, name, width, height):
@@ -155,26 +144,46 @@ class PygletLib:
                 self.setSpriteDimension(opts['name'], optsWidth, optsHeight)
                 self.addContent(optsId, 'sprite', opts)
 
+    # Update content
+    def update(self, dt):
+        dataFromServer = self.client.recv_data()
+        dataFromServer = dataFromServer.replace("'", "\"")
+        contents = json.loads(dataFromServer)
+        if 'map' in contents:
+            self.addContents(self.mapWidth, self.mapHeight, contents['map'])
+
+
+    # Check game status
+    def gameStatus(self, data):
+        if 'message' in data:
+            raise Exception("Game over")
+        if 'error' in data:
+            print("Error %s" % (data.error))
+
     # Run pyglet online app
     def runOnline(self, client):
+        fps_display = pyglet.clock.ClockDisplay()
 
         @self.window.event
         def on_draw():
             self.window.clear()
-
             dataFromServer = client.recv_data()
             dataFromServer = dataFromServer.replace("'", "\"")
-            #print("Not init %s" % (dataFromServer))
             contents = json.loads(dataFromServer)
 
+            print("on_draw")
             if 'map' in contents:
                 self.addContents(self.mapWidth, self.mapHeight, contents['map'])
+            else:
+                self.gameStatus(contents)
 
+            fps_display.draw()
             self.draw()
 
 
         @self.window.event
         def on_mouse_press(x, y, button, modifiers):
+            self.window.clear()
             if pyglet.window.mouse.LEFT:
                 posX = math.floor((x * self.mapWidth) // self.window.width)
                 posY = math.floor((y * self.mapHeight) // self.window.height)
@@ -193,6 +202,7 @@ class PygletLib:
                 exit(0)
 
         pyglet.app.run()
+
 
     # Run pyglet app
     def run(self):
@@ -218,4 +228,5 @@ class PygletLib:
 
     # Close pyglet app
     def close(self):
+        self.event_loop.exit()
         pyglet.app.exit()

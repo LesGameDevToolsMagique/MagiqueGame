@@ -34,11 +34,12 @@ class ClientHandler(BaseRequestHandler):
     def handle(self):
         game = TicTacToe(self)
 
-        game.init()
+        try:
+            game.init()
 
-        game.run()
-
-        game.destroy()
+            game.run()
+        except Exception:
+            game.destroy()
 
 
 #
@@ -64,7 +65,8 @@ def main():
 
     try:
         s.serve_forever()
-    except KeyboardInterrupt:
+    except Exception:
+        s.close()
         exit(0)
 
 
